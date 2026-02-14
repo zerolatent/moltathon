@@ -37,27 +37,41 @@ class CompanyResearcher:
         """
         prompt = self._build_research_prompt(company)
 
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a sales research analyst. Analyze companies and identify "
-                        "their value propositions, likely pain points, and communication style. "
-                        "Be concise and actionable. Output JSON."
-                    ),
-                },
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0.7,
-        )
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are a sales research analyst. Analyze companies and identify "
+                            "their value propositions, likely pain points, and communication style. "
+                            "Be concise and actionable. You MUST output valid JSON only, no other text."
+                        ),
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.7,
+            )
 
-        result = response.choices[0].message.content
-        import json
+            result = response.choices[0].message.content
+            import json
+            import re
 
-        data = json.loads(result)
+            # Try to extract JSON from response (in case there's extra text)
+            json_match = re.search(r'\{[\s\S]*\}', result)
+            if json_match:
+                data = json.loads(json_match.group())
+            else:
+                data = json.loads(result)
+        except Exception as e:
+            print(f"Error in LLM research: {e}")
+            # Fallback to defaults
+            data = {
+                "value_props": ["Innovative solutions", "Industry expertise", "Customer focus"],
+                "pain_points": ["Scaling challenges", "Market competition", "Resource optimization"],
+                "tone": "professional"
+            }
 
         # Update company with research
         company.value_props = data.get("value_props", [])
