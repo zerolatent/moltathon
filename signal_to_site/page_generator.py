@@ -53,6 +53,12 @@ class PageGenerator:
         # Generate personalized copy
         copy = self._generate_copy(company)
 
+        # Extract brand colors from browser research
+        brand_colors = company.brand_colors or {}
+        primary_color = brand_colors.get("primary", "#2563eb")
+        secondary_color = brand_colors.get("secondary", "#1e293b")
+        background_style = brand_colors.get("background_style", "light")
+
         # Render HTML template
         template = self.env.get_template("landing_page.html")
         html = template.render(
@@ -66,6 +72,11 @@ class PageGenerator:
             cta_url=self.cta_url,
             your_company_name=self.your_company_name,
             year=datetime.now().year,
+            # Brand colors from browser research
+            primary_color=primary_color,
+            secondary_color=secondary_color,
+            background_style=background_style,
+            customers=company.customers[:3] if company.customers else [],
         )
 
         # Generate URL-safe slug
