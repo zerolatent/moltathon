@@ -1,0 +1,44 @@
+{
+  "company": {
+    "name": "Linear",
+    "domain": "linear.app",
+    "tagline": "Linear is a better way to build products",
+    "description": "Streamline issues, sprints, and product roadmaps with the system built for modern software teams.",
+    "industry": "B2B SaaS / Developer Tools",
+    "stage": "Series B ($52M raised)",
+    "employee_count": "50-100"
+  },
+  "brand": {
+    "primary_color": "#5E6AD2",
+    "secondary_color": "#8A8F98",
+    "background": "dark",
+    "font_style": "modern, clean, minimal",
+    "tone": "technical-professional"
+  },
+  "product": {
+    "name": "Linear",
+    "description": "Issue tracking and project management for software teams",
+    "target_audience": "Engineering teams, Product managers, Startups",
+    "key_benefit": "Speed - built for keyboard-first workflows",
+    "differentiator": "Fastest issue tracker, designed for modern dev teams"
+  },
+  "social_proof": {
+    "customer_logos": ["Vercel", "Ramp", "Loom", "Cash App", "Retool"],
+    "best_case_study": "How Ramp scaled from 50 to 500 engineers with Linear",
+    "key_metric": "10,000+ teams use Linear"
+  },
+  "hooks": {
+    "recent_blog": "Introducing Linear Insights: Analytics for product teams",
+    "team_member": {
+      "name": "Karri Saarinen",
+      "title": "CEO & Co-founder",
+      "linkedin": "https://linkedin.com/in/karrisaarinen"
+    },
+    "specific_detail": "Founded by ex-Airbnb and Uber designers - explains the obsessive UI polish"
+  },
+  "signal": {
+    "type": "hiring",
+    "details": "Head of Sales"
+  },
+  "research_time_seconds": 28
+}

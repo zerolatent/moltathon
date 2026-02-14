@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling Your Sales Team? | SalesBot AI</title>
+    <meta property="og:title" content="Built for Linear - Scaling Your Sales Team">
+    <meta property="og:description" content="See how we help developer tool companies like Linear scale sales without losing the engineering-first culture.">
+    <style>
+        :root {
+            --primary: #5E6AD2;
+            --primary-dark: #4F5ABF;
+            --secondary: #8A8F98;
+            --bg-dark: #0D0E12;
+            --bg-card: #1A1B1F;
+            --text: #FFFFFF;
+            --text-muted: #8A8F98;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 32px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary) 0%, #818CF8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Insight Section */
+        .insight {
+            padding: 60px 0;
+            border-top: 1px solid #2A2B30;
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #2A2B30;
+        }
+
+        .insight-card h3 {
+            color: var(--primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .insight-card p {
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .insight-card p strong {
+            color: var(--text);
+        }
+
+        /* Challenges */
+        .challenges {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 48px;
+            text-align: center;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .challenge-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 28px;
+            border: 1px solid #2A2B30;
+        }
+
+        .challenge-card h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .challenge-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* Solutions */
+        .solutions {
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #12131A 100%);
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, rgba(94, 106, 210, 0.1) 0%, rgba(94, 106, 210, 0.05) 100%);
+            border: 1px solid rgba(94, 106, 210, 0.3);
+            border-radius: 12px;
+            padding: 28px;
+        }
+
+        .solution-card h4 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        /* Social Proof */
+        .proof {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid #2A2B30;
+        }
+
+        .proof p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .logos {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+            opacity: 0.6;
+        }
+
+        .logos span {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* CTA */
+        .final-cta {
+            padding: 100px 0;
+            text-align: center;
+            background: linear-gradient(180deg, #12131A 0%, var(--bg-dark) 100%);
+        }
+
+        .final-cta h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .final-cta p {
+            color: var(--text-muted);
+            font-size: 18px;
+            margin-bottom: 32px;
+        }
+
+        .cta-note {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid #2A2B30;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <span class="badge">Built for Linear</span>
+            <h1>Scaling your <span>sales team</span><br>at Linear?</h1>
+            <p>We help developer-focused companies build sales processes that engineers actually respect. No sleazy tactics—just systems that convert technical buyers.</p>
+            <a href="https://calendly.com/salesbot-demo" class="cta-button">See How It Works</a>
+        </div>
+    </section>
+
+    <section class="insight">
+        <div class="container">
+            <div class="insight-card">
+                <h3>Why We Reached Out</h3>
+                <p>We noticed you're hiring your <strong>Head of Sales</strong>. Having watched Linear grow from the tool engineers whisper about to <strong>10,000+ teams</strong>—including Vercel, Ramp, and Loom—we know the next chapter requires sales that matches your product quality. That's exactly what we help with.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="challenges">
+        <div class="container">
+            <h2 class="section-title">The DevTools Sales Challenge</h2>
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <h4>Engineers Hate Sales</h4>
+                    <p>Your users chose Linear because it respects their time. Traditional enterprise sales feels like the opposite of your brand.</p>
+                </div>
+                <div class="challenge-card">
+                    <h4>PLG to Enterprise</h4>
+                    <p>Product-led growth got you here. But landing Ramp-sized accounts needs a human touch—without losing the magic.</p>
+                </div>
+                <div class="challenge-card">
+                    <h4>Scaling Without Selling Out</h4>
+                    <p>Every DevTools company fears becoming "enterprise-y." You need sales that feels like Linear—fast, focused, no BS.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solutions">
+        <div class="container">
+            <h2 class="section-title">How We Help Teams Like Linear</h2>
+            <div class="challenge-grid">
+                <div class="solution-card">
+                    <h4>Technical Sales Playbooks</h4>
+                    <p>Scripts and sequences designed for engineering buyers. No fluff, no manipulation—just value-first conversations.</p>
+                </div>
+                <div class="solution-card">
+                    <h4>Founder-Mode Sales</h4>
+                    <p>Systematize what Karri and the team did intuitively. Make every rep sell like a founder who truly gets the product.</p>
+                </div>
+                <div class="solution-card">
+                    <h4>Enterprise Without the BS</h4>
+                    <p>Land 6-figure deals while keeping the speed and transparency that made Linear famous.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="proof">
+        <div class="container">
+            <p>Trusted by teams who sell to developers</p>
+            <div class="logos">
+                <span>Vercel</span>
+                <span>Supabase</span>
+                <span>Railway</span>
+                <span>Resend</span>
+                <span>Clerk</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container">
+            <h2>Ready to scale sales the Linear way?</h2>
+            <p>15 minutes to see if there's a fit. No pitch deck, just conversation.</p>
+            <a href="https://calendly.com/salesbot-demo" class="cta-button">Book a Call</a>
+            <p class="cta-note">We've helped 50+ DevTools companies scale from PLG to enterprise.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 SalesBot AI. This page was personalized for Linear.</p>
+        </div>
+    </footer>
+</body>
+</html>
