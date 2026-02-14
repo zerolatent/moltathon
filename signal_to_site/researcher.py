@@ -118,10 +118,13 @@ class CompanyResearcher:
 
             print(f"  [Browser] Extracted brand colors: {result.primary_color}")
 
-        except ImportError:
-            print("  [Browser] Playwright not installed, skipping browser research")
+        except ImportError as e:
+            print(f"  [Browser] Import error: {e}")
+            print("  [Browser] Install with: pip install playwright && playwright install chromium")
         except Exception as e:
+            import traceback
             print(f"  [Browser] Error: {e}")
+            print(f"  [Browser] {traceback.format_exc()}")
 
         return company
 
