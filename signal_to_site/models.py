@@ -25,6 +25,12 @@ class Company(BaseModel):
     pain_points: list[str] = []
     tone: Optional[str] = None  # e.g., "professional", "casual", "technical"
 
+    # Browser research results
+    brand_colors: Optional[dict] = None  # {"primary": "#xxx", "secondary": "#xxx", "background_style": "dark/light"}
+    customers: list[str] = []
+    website_content: Optional[str] = None
+    screenshot_path: Optional[str] = None
+
     # Contacts
     founders: list[dict] = []
     target_contact: Optional[dict] = None
