@@ -6,12 +6,22 @@
     <title>{{ headline }} | {{ your_company_name }}</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
+            /* Brand colors extracted from {{ company_name }}'s website */
+            --primary: {{ primary_color | default('#2563eb') }};
+            --primary-dark: {{ secondary_color | default('#1d4ed8') }};
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
             --gray-600: #4b5563;
             --gray-900: #111827;
+            {% if background_style == 'dark' %}
+            --bg-main: #0d0e12;
+            --text-main: #ffffff;
+            --text-muted: rgba(255,255,255,0.7);
+            {% else %}
+            --bg-main: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            {% endif %}
         }
 
         * {
@@ -23,7 +33,8 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.6;
-            color: var(--gray-900);
+            color: var(--text-main);
+            background: var(--bg-main);
         }
 
         .container {
@@ -35,7 +46,11 @@
         /* Hero Section */
         .hero {
             padding: 80px 0;
+            {% if background_style == 'dark' %}
+            background: linear-gradient(135deg, #1a1b1e 0%, var(--bg-main) 100%);
+            {% else %}
             background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+            {% endif %}
         }
 
         .hero-content {
@@ -66,7 +81,7 @@
 
         .hero p {
             font-size: 20px;
-            color: var(--gray-600);
+            color: var(--text-muted);
             margin-bottom: 32px;
         }
 
@@ -89,7 +104,7 @@
         /* Pain Points Section */
         .pain-points {
             padding: 80px 0;
-            background: white;
+            background: var(--bg-main);
         }
 
         .section-title {
@@ -107,17 +122,22 @@
 
         .pain-card {
             padding: 32px;
+            {% if background_style == 'dark' %}
+            background: rgba(255,255,255,0.05);
+            {% else %}
             background: var(--gray-50);
+            {% endif %}
             border-radius: 12px;
         }
 
         .pain-card h3 {
             font-size: 20px;
             margin-bottom: 12px;
+            color: var(--text-main);
         }
 
         .pain-card p {
-            color: var(--gray-600);
+            color: var(--text-muted);
         }
 
         /* Solution Section */
@@ -146,7 +166,7 @@
         .value-card h3 {
             font-size: 20px;
             margin-bottom: 12px;
-            color: #60a5fa;
+            color: var(--primary);
         }
 
         .value-card p {
@@ -192,8 +212,35 @@
         footer {
             padding: 32px 0;
             text-align: center;
-            color: var(--gray-600);
+            color: var(--text-muted);
             font-size: 14px;
+            background: var(--bg-main);
+        }
+
+        /* Customers section */
+        .customers {
+            padding: 40px 0;
+            text-align: center;
+            background: var(--bg-main);
+            border-top: 1px solid {% if background_style == 'dark' %}rgba(255,255,255,0.1){% else %}var(--gray-100){% endif %};
+        }
+
+        .customers p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .customers-list {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .customers-list span {
+            color: var(--text-main);
+            font-weight: 500;
         }
     </style>
 </head>
@@ -236,6 +283,19 @@
             </div>
         </div>
     </section>
+
+    {% if customers %}
+    <section class="customers">
+        <div class="container">
+            <p>Trusted by teams at companies like {{ company_name }}</p>
+            <div class="customers-list">
+                {% for customer in customers %}
+                <span>{{ customer }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
 
     <section class="cta-section">
         <div class="container">
