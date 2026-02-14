@@ -93,33 +93,42 @@ Generate JSON with:
 Tone: {company.tone or 'professional'}. Be human, not salesy.
 """
 
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an expert B2B sales copywriter. Write personalized, "
-                        "human outreach that references specific signals. Never be pushy. "
-                        "Output valid JSON."
-                    ),
-                },
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0.8,
-        )
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert B2B sales copywriter. Write personalized, "
+                            "human outreach that references specific signals. Never be pushy. "
+                            "You MUST output valid JSON only, no other text."
+                        ),
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.8,
+            )
 
-        import json
-        data = json.loads(response.choices[0].message.content)
+            import json
+            import re
+            result = response.choices[0].message.content
+            json_match = re.search(r'\{[\s\S]*\}', result)
+            if json_match:
+                data = json.loads(json_match.group())
+            else:
+                data = json.loads(result)
 
-        return OutreachDraft(
-            company=company,
-            email_subject=data["email_subject"],
-            email_body=data["email_body"],
-            linkedin_message=data.get("linkedin_message"),
-            landing_page_url=landing_page_url,
-        )
+            return OutreachDraft(
+                company=company,
+                email_subject=data["email_subject"],
+                email_body=data["email_body"],
+                linkedin_message=data.get("linkedin_message"),
+                landing_page_url=landing_page_url,
+            )
+        except Exception as e:
+            print(f"Error generating outreach with AI: {e}")
+            return self._generate_outreach_template(company, landing_page_url)
 
     def _generate_outreach_template(
         self,
