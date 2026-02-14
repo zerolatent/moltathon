@@ -21,14 +21,21 @@ class PageGenerator:
         your_value_prop: str,
         cta_url: str = "https://calendly.com/your-link",
         openai_api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
     ):
         self.your_company_name = your_company_name
         self.your_value_prop = your_value_prop
         self.cta_url = cta_url
 
         self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
+        self.base_url = base_url or os.getenv("OPENAI_BASE_URL")
+        self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
         if self.openai_api_key:
-            self.client = OpenAI(api_key=self.openai_api_key)
+            client_kwargs = {"api_key": self.openai_api_key}
+            if self.base_url:
+                client_kwargs["base_url"] = self.base_url
+            self.client = OpenAI(**client_kwargs)
         else:
             self.client = None
 
@@ -113,7 +120,7 @@ Keep it {company.tone or 'professional'} in tone. Be specific to their situation
 """
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.model,
             messages=[
                 {
                     "role": "system",
