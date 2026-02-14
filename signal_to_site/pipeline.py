@@ -190,7 +190,9 @@ class SignalToSitePipeline:
             )
 
         except Exception as e:
+            import traceback
             self.console.print(f"[red]Error processing {signal.company_name}: {e}[/red]")
+            self.console.print(f"[dim]{traceback.format_exc()}[/dim]")
             return None
 
     def _print_summary(self, results: list[PipelineResult]):
