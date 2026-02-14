@@ -1,0 +1,260 @@
+# Signal-to-Site Lobster Workflow
+#
+# The 60-second GTM pipeline with approval gates.
+# Designed for live demos and production use.
+#
+# Usage:
+#   /signal-to-site stripe.com hiring Head of Sales
+#   OR
+#   lobster run workflows/signal-pipeline.yaml --set domain=stripe.com --set signal="hiring Head of Sales"
+
+name: signal-to-site-pipeline
+description: >
+  Transform a company + signal into hyper-personalized outreach in 60 seconds.
+  Uses browser automation to extract brand identity, generates a landing page
+  in their colors, and drafts outreach referencing their actual content.
+
+timeout: 120s  # 2 minutes max (usually completes in 60s)
+
+args:
+  domain:
+    description: Target company domain (e.g., stripe.com)
+    required: true
+  signal:
+    description: Signal type and details (e.g., "hiring Head of Sales")
+    default: ""
+  deploy:
+    description: Deploy to Netlify (true/false)
+    default: "false"
+  send:
+    description: Send outreach after approval (true/false)
+    default: "false"
+
+steps:
+  # ============================================================
+  # PHASE 1: Research (30 seconds)
+  # ============================================================
+
+  - id: announce-start
+    description: Notify user we're starting
+    command: |
+      echo '{"status": "starting", "message": "🔍 Researching $domain...", "domain": "$domain", "signal": "$signal"}'
+
+  - id: visit-homepage
+    description: Visit target homepage and screenshot
+    tool: browser
+    action: navigate
+    params:
+      url: "https://$domain"
+    timeout: 10s
+
+  - id: screenshot-homepage
+    description: Capture homepage screenshot
+    tool: browser
+    action: screenshot
+    params:
+      fullPage: true
+      path: "./output/$domain/homepage.png"
+    depends: visit-homepage
+
+  - id: extract-homepage
+    description: Extract homepage content
+    tool: browser
+    action: extractText
+    depends: visit-homepage
+
+  - id: analyze-brand
+    description: Analyze brand from homepage
+    tool: llm
+    params:
+      prompt: |
+        Analyze this homepage content and extract brand identity:
+
+        ${{ extract-homepage.text }}
+
+        Return JSON:
+        {
+          "company_name": "...",
+          "tagline": "...",
+          "primary_color": "#hex (guess from common button colors)",
+          "tone": "professional|casual|technical",
+          "key_value_prop": "..."
+        }
+    depends: extract-homepage
+
+  - id: visit-about
+    description: Visit about page for more context
+    tool: browser
+    action: navigate
+    params:
+      url: "https://$domain/about"
+    timeout: 5s
+    continueOnError: true
+    depends: analyze-brand
+
+  - id: extract-about
+    description: Extract about page content
+    tool: browser
+    action: extractText
+    depends: visit-about
+    continueOnError: true
+
+  - id: compile-profile
+    description: Compile full brand profile
+    tool: llm
+    params:
+      prompt: |
+        Compile a brand profile from this research:
+
+        Homepage analysis:
+        ${{ analyze-brand.output }}
+
+        About page content:
+        ${{ extract-about.text }}
+
+        Signal: $signal
+
+        Return complete brand profile JSON including hooks for personalization.
+    depends: [analyze-brand, extract-about]
+
+  # ============================================================
+  # PHASE 2: Generate Assets (20 seconds)
+  # ============================================================
+
+  - id: generate-page
+    description: Generate personalized landing page
+    tool: llm
+    params:
+      prompt: |
+        Generate a complete HTML landing page for:
+        ${{ compile-profile.output }}
+
+        Requirements:
+        - Use their primary color for buttons/headers
+        - Include their company name in headline
+        - Reference specific details from research
+        - Mobile-responsive, inline CSS
+        - CTA links to ${{ env.CTA_URL }}
+
+        Output valid HTML only, no markdown.
+    depends: compile-profile
+
+  - id: save-page
+    description: Save generated page to file
+    tool: write
+    params:
+      path: "./output/$domain/index.html"
+      content: "${{ generate-page.output }}"
+    depends: generate-page
+
+  - id: generate-outreach
+    description: Generate email and LinkedIn drafts
+    tool: llm
+    params:
+      prompt: |
+        Generate personalized outreach for:
+        ${{ compile-profile.output }}
+
+        Email requirements:
+        - Subject under 50 chars, specific
+        - Body under 150 words
+        - Reference something from their site
+        - Include landing page link
+        - Sign as ${{ env.SENDER_NAME }}
+
+        LinkedIn requirements:
+        - Under 300 chars
+        - Reference specific detail
+
+        Return JSON with email_subject, email_body, linkedin_message.
+    depends: compile-profile
+
+  - id: save-outreach
+    description: Save outreach drafts
+    tool: write
+    params:
+      path: "./output/$domain/outreach.json"
+      content: "${{ generate-outreach.output }}"
+    depends: generate-outreach
+
+  # ============================================================
+  # PHASE 3: Deploy (5 seconds, optional)
+  # ============================================================
+
+  - id: deploy-check
+    description: Check if deployment requested
+    condition: $deploy == "true"
+    command: echo '{"deploy": true}'
+
+  - id: deploy-page
+    description: Deploy to Netlify
+    tool: bash
+    params:
+      command: "cd ./output/$domain && netlify deploy --prod --dir=."
+    condition: $deploy == "true"
+    depends: [save-page, deploy-check]
+    continueOnError: true
+
+  # ============================================================
+  # PHASE 4: Deliver Results
+  # ============================================================
+
+  - id: compile-results
+    description: Compile final results
+    tool: llm
+    params:
+      prompt: |
+        Format these results for the user:
+
+        Brand Profile:
+        ${{ compile-profile.output }}
+
+        Outreach:
+        ${{ generate-outreach.output }}
+
+        Page saved to: ./output/$domain/index.html
+        Screenshot: ./output/$domain/homepage.png
+
+        Format as a nice summary with emojis showing:
+        - What was found (company, colors, hooks)
+        - Landing page location/URL
+        - Email draft (subject + body)
+        - LinkedIn message
+        - Time taken
+
+        Ask if they want to adjust anything or send.
+    depends: [save-page, save-outreach]
+
+  # ============================================================
+  # PHASE 5: Send (with approval gate)
+  # ============================================================
+
+  - id: send-approval
+    description: Get approval before sending
+    approval: required
+    prompt: |
+      Ready to send outreach to $domain?
+
+      ${{ compile-results.output }}
+
+      Approve to send, or decline to just save drafts.
+    condition: $send == "true"
+    depends: compile-results
+
+  - id: send-outreach
+    description: Send outreach (if approved)
+    tool: email
+    params:
+      to: "${{ compile-profile.output.target_email }}"
+      subject: "${{ generate-outreach.output.email_subject }}"
+      body: "${{ generate-outreach.output.email_body }}"
+    condition: $send-approval.approved
+    depends: send-approval
+
+output:
+  brand_profile: ${{ compile-profile.output }}
+  page_path: "./output/$domain/index.html"
+  screenshot_path: "./output/$domain/homepage.png"
+  outreach: ${{ generate-outreach.output }}
+  deployed_url: ${{ deploy-page.output.url }}
+  sent: ${{ send-outreach.success }}
