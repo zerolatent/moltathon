@@ -1,0 +1,98 @@
+{
+  "$schema": "https://openclaw.ai/schemas/plugin.json",
+  "name": "@moltathon/signal-to-site",
+  "version": "1.0.0",
+  "description": "Transform Linkt GTM signals into hyper-personalized outreach in 60 seconds. Text a company name, get a branded landing page + email referencing their actual content.",
+  "author": "Moltathon Team",
+  "license": "MIT",
+  "keywords": [
+    "linkt",
+    "gtm",
+    "sales",
+    "outreach",
+    "personalization",
+    "browser-automation",
+    "landing-pages"
+  ],
+  "main": "plugin/index.js",
+  "skills": ["skills/signal-to-site"],
+  "engines": {
+    "openclaw": ">=0.5.0"
+  },
+  "capabilities": {
+    "browser": true,
+    "write": true,
+    "bash": true
+  },
+  "tools": {
+    "signal_to_site_research": {
+      "description": "Research a company website and extract brand identity"
+    },
+    "signal_to_site_generate": {
+      "description": "Generate personalized landing page and outreach"
+    },
+    "signal_to_site_deploy": {
+      "description": "Deploy generated page to Netlify"
+    }
+  },
+  "commands": {
+    "signal-to-site": {
+      "description": "Generate hyper-personalized landing page + outreach in 60 seconds",
+      "usage": "/signal-to-site <domain> [signal]"
+    }
+  },
+  "hooks": {
+    "before_inference": {
+      "description": "Auto-detect company mentions for signal-to-site processing"
+    }
+  },
+  "gateway": {
+    "methods": {
+      "signalToSite.process": {
+        "description": "Process a signal from external source (Linkt webhook)"
+      }
+    }
+  },
+  "config": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "your_company": {
+          "type": "string",
+          "description": "Your company name for outreach"
+        },
+        "your_value_prop": {
+          "type": "string",
+          "description": "Your value proposition (one sentence)"
+        },
+        "sender_name": {
+          "type": "string",
+          "description": "Name to sign outreach with"
+        },
+        "sender_email": {
+          "type": "string",
+          "description": "Reply-to email address"
+        },
+        "calendly_url": {
+          "type": "string",
+          "description": "Booking link for CTA"
+        },
+        "deploy_to": {
+          "type": "string",
+          "enum": ["local", "netlify", "vercel"],
+          "default": "local",
+          "description": "Where to deploy generated pages"
+        },
+        "netlify_token": {
+          "type": "string",
+          "description": "Netlify API token for deployment"
+        },
+        "auto_send": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically send outreach (requires approval gate)"
+        }
+      }
+    }
+  }
+}

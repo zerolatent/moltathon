@@ -1,0 +1,17 @@
+[project]
+name = "signal-to-site"
+version = "0.1.0"
+description = "GTM Signal-to-Outreach Pipeline - Linkt signals trigger personalized landing pages and outreach"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.27.0",
+    "openai>=1.0.0",
+    "jinja2>=3.1.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "rich>=13.0.0",
+]
+
+[project.scripts]
+signal-to-site = "signal_to_site.cli:main"
