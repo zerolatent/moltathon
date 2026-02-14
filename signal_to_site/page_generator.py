@@ -119,21 +119,29 @@ Generate JSON with:
 Keep it {company.tone or 'professional'} in tone. Be specific to their situation.
 """
 
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a conversion copywriter. Write compelling, specific landing page copy. Output valid JSON.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0.8,
-        )
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a conversion copywriter. Write compelling, specific landing page copy. You MUST output valid JSON only, no other text.",
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.8,
+            )
 
-        import json
-        return json.loads(response.choices[0].message.content)
+            import json
+            import re
+            result = response.choices[0].message.content
+            json_match = re.search(r'\{[\s\S]*\}', result)
+            if json_match:
+                return json.loads(json_match.group())
+            return json.loads(result)
+        except Exception as e:
+            print(f"Error generating copy with AI: {e}")
+            return self._generate_copy_template(company)
 
     def _generate_copy_template(self, company: Company) -> dict:
         """Generate copy using templates (no AI required)."""
