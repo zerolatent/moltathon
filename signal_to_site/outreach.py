@@ -20,14 +20,21 @@ class OutreachGenerator:
         sender_title: str,
         your_company_name: str,
         openai_api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
     ):
         self.sender_name = sender_name
         self.sender_title = sender_title
         self.your_company_name = your_company_name
 
         self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
+        self.base_url = base_url or os.getenv("OPENAI_BASE_URL")
+        self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
         if self.openai_api_key:
-            self.client = OpenAI(api_key=self.openai_api_key)
+            client_kwargs = {"api_key": self.openai_api_key}
+            if self.base_url:
+                client_kwargs["base_url"] = self.base_url
+            self.client = OpenAI(**client_kwargs)
         else:
             self.client = None
 
@@ -87,7 +94,7 @@ Tone: {company.tone or 'professional'}. Be human, not salesy.
 """
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.model,
             messages=[
                 {
                     "role": "system",
