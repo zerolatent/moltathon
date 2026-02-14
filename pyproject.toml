@@ -15,3 +15,4 @@ dependencies = [
 
 [project.scripts]
 signal-to-site = "signal_to_site.cli:main"
+"playwright>=1.40.0"
