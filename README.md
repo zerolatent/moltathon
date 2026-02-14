@@ -1,95 +1,349 @@
-## Tracks
+# Signal-to-Site
 
-### Skillsmaxxing
+> **Transform GTM signals into hyper-personalized outreach in 60 seconds.**
 
-Build skills that make OpenClaw agents smarter and more capable. This is the optimization track — security guardrails, metaprompting, smart model routing, token efficiency, cost optimization, domain-specific intelligence. If it levels up what an agent can do, it belongs here.
+Text a company name to your OpenClaw bot. Get a branded landing page + personalized email back in under a minute.
 
-**Ideas to get you started:**
+```
+You: "linear.app is hiring Head of Sales"
 
-- Security guardrail skills that prevent agents from doing dangerous things
-- Metaprompting systems that optimize how agents structure their own prompts
-- Smart model router that picks the cheapest model capable of handling each task
-- Context compression that summarizes conversation history to save tokens without losing quality
-- Tool chain optimizer that pre-plans multi-step sequences instead of figuring it out turn-by-turn
-- Retry/fallback skill that catches failures and intelligently retries with different providers
-- Domain-specific skills (legal, real estate, finance) with measurable before/after improvement
+Agent: ✅ Done in 52 seconds!
 
-### Best Deployment Tool
+🎨 Landing Page: https://signal-to-site.netlify.app/linear-app
+   Uses Linear purple (#5E6AD2)
+   References their Ramp case study
 
-Make it dead simple to set up and deploy an OpenClaw bot. The easier the better. If your grandma could deploy it, you're on the right track. One-click setups, simplified configuration, deployment scripts, hosting solutions — anything that lowers the barrier to getting an agent running.
+📧 Email: "Hi Karri, loved the Ramp case study—50 to 500 engineers..."
 
-**Ideas to get you started:**
+💼 LinkedIn: Ready to send (274 chars)
+```
 
-- One-command deploy script that handles everything from install to channel pairing
-- Docker Compose setup with pre-configured defaults
-- Web-based setup wizard that generates your openclaw.json
-- Deploy-to-Railway / Deploy-to-Fly.io one-click templates
-- Mobile-first setup flow where you configure everything from your phone
+---
 
+## What Makes This Different
 
+This isn't template mail-merge. Signal-to-Site:
 
+| Traditional Outreach | Signal-to-Site |
+|---------------------|----------------|
+| Generic templates | Pages styled in their brand colors |
+| "Hi {FirstName}" | References their actual case studies |
+| Manual research (30 min) | Automated research (30 sec) |
+| Feels mass-produced | Feels hand-crafted |
 
-### Automate Your Life
+**The magic**: We scrape their actual website, extract their brand identity, and generate assets that look like *their* team made them.
 
-Build an agent that replaces something you actually do manually. Work, personal, business — if it saves real time, it counts. Browser automation, cron jobs, messaging integrations, webhooks, whatever gets the job done.
+---
 
-**Ideas to get you started:**
+## Quick Start
 
-- Invoice processing agent: watches Gmail, extracts line items, logs to spreadsheet, sends summary to your phone
-- Lead qualification bot: monitors form submissions, researches companies via browser, routes hot leads to Slack
-- Social media repurposing: send it a blog post via WhatsApp, get platform-specific posts back
-- Meeting prep agent: cron job checks calendar each morning, researches attendees, texts you a briefing
-- Inventory/restock alerts for a small business via browser monitoring
-- Bill payment autopilot: watches email for due dates, logs into portals, confirms payments
-- Job search agent: monitors listings, matches against your criteria, sends matches to Telegram
+### Prerequisites
 
+- [OpenClaw](https://docs.openclaw.ai) installed and running
+- An Anthropic API key (or other LLM provider)
 
+### Setup (One-Time)
 
-### SalesMolty Track w/ Linkt AI
+```bash
+# Clone the repo
+git clone https://github.com/moltathon/signal-to-site
+cd signal-to-site
 
-**Sponsored by Linkt AI**
+# Run setup script
+./setup.sh
+```
 
-It's the age of the GTM Engineer. Turn the *art* of sales into a **science**. GTM Engineer is the fastest growing role in the world — basically: how can I use AI to increase my book of business? Linkt enables the GTM builders, OpenClaw just pour.
+The setup script will prompt you for:
+- Your API key
+- Your company name & value prop
+- Optional: Linkt, Netlify, Slack integrations
 
-This track is about combining Linkt's data intelligence with OpenClaw's automation to build AI-powered sales and go-to-market workflows.
+### Run the Demo
 
-**How it works:** Linkt handles the lead intelligence and data layer (finding companies, tracking hiring signals, monitoring funding rounds). OpenClaw handles the execution layer (building assets, sending outreach, automating follow-ups). Together they create end-to-end GTM machines.
+```bash
+# Start OpenClaw
+openclaw chat
 
-**Example use cases:**
+# Run signal-to-site
+> /signal-to-site stripe.com hiring Head of Sales
+```
 
-- **Linkt:** "Find startups in Starbase, TX that have raised capital in the last 18 months."
-**Molty:** "Make a custom landing page for each lead, and send direct targeted outbound and LinkedIn connections to founders."
-- **Linkt:** "Alert me when an Austin-based startup is hiring for their first marketing role."
-**Molty:** "Look through company case study repositories, create demo web app showing how my human's solution can help improve marketing efficiency."
+Or use natural language:
+```
+> Research linear.app and create outreach for them
+```
 
-**Linkt resources:**
+---
 
-- Linkt API/MCP Docs: [https://docs.linkt.ai](https://docs.linkt.ai/)
-- Use code: **CLAW**
-- Free credits: **1 month free (150 credits)**
+## How It Works
 
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   INPUT     │────▶│  RESEARCH   │────▶│  GENERATE   │────▶│   OUTPUT    │
+│             │     │             │     │             │     │             │
+│ "linear.app │     │ Browser     │     │ Landing     │     │ Live URL    │
+│  hiring     │     │ scrapes     │     │ page +      │     │ Email draft │
+│  Head of    │     │ their site  │     │ outreach    │     │ LinkedIn    │
+│  Sales"     │     │             │     │             │     │             │
+└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │  EXTRACTS   │
+                    │             │
+                    │ • Colors    │
+                    │ • Tagline   │
+                    │ • Team      │
+                    │ • Cases     │
+                    └─────────────┘
+```
 
+### The 60-Second Pipeline
 
-## Side Quests (Bonus Prizes)
+1. **Parse** (2s) - Extract domain and signal from input
+2. **Research** (30s) - Browser visits their site, screenshots, extracts content
+3. **Analyze** (5s) - LLM identifies brand colors, tone, key hooks
+4. **Generate** (20s) - Create landing page HTML + outreach drafts
+5. **Deploy** (3s) - Save locally or deploy to Netlify
 
-Open to anyone regardless of track. Stack these on top of your main project.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed technical documentation.
 
-### Platform / Product Molts
+---
 
-Build something for the OpenClaw ecosystem — a product, dashboard, companion tool, or integration that other users would benefit from.
+## Features
 
-### Make Me Laugh
+### OpenClaw Native
+- Uses OpenClaw's built-in browser automation
+- Works via WhatsApp, Telegram, Discord, CLI
+- Lobster workflow with approval gates
+- Sub-agent support for parallel processing
 
-Funniest hack wins. Technical depth doesn't matter. The demo IS the deliverable.
+### Linkt Integration
+- Real GTM signals (hiring, funding, tech adoption)
+- Use code **CLAW** for free credits
+- Webhook support for real-time processing
 
-### Best Skill
+### Smart Personalization
+- Extracts actual brand colors from websites
+- References real case studies and team members
+- Matches their communication tone
+- Creates landing pages in their aesthetic
 
-Cleanest, most useful, most polished OpenClaw skill. Must be publishable to ClawHub.
+### Production Ready
+- Approval gates before sending
+- Follow-up sequence generation
+- Slack/Telegram notifications
+- Netlify deployment
 
-### Best Rig
+---
 
-Coolest hardware setup or integration. 3D printers, IoT devices, home automation, cameras — if it connects to OpenClaw and does something cool, show it off.
+## Usage
 
-### Best Plugin
+### Slash Command
 
-Best OpenClaw plugin. See the plugin docs: https://docs.openclaw.ai/plugin
+```
+/signal-to-site <domain> [signal]
+
+# Examples:
+/signal-to-site stripe.com hiring Head of Sales
+/signal-to-site anthropic.com raised Series C
+/signal-to-site linear.app
+```
+
+### Natural Language
+
+```
+"Research acme.com and create outreach for them"
+"I saw techstartup.io is hiring - build me a campaign"
+"Create a personalized landing page for cloudscale.ai"
+```
+
+### With Linkt Signals
+
+```
+/signal-to-site linkt --type hiring --limit 5
+```
+
+---
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Required
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Your Company (for outreach)
+YOUR_COMPANY_NAME="Acme Inc"
+YOUR_VALUE_PROP="AI automation that saves 10+ hours/week"
+SENDER_NAME="Alex"
+SENDER_EMAIL="alex@acme.com"
+CTA_URL="https://calendly.com/your-link"
+
+# Optional: Linkt
+LINKT_API_KEY=your_linkt_key
+
+# Optional: Deployment
+NETLIFY_TOKEN=your_netlify_token
+
+# Optional: Notifications
+SLACK_WEBHOOK_URL=your_slack_webhook
+```
+
+### OpenClaw Config
+
+```json
+{
+  "plugins": ["./path/to/signal-to-site"],
+  "skills": {
+    "signal-to-site": {
+      "your_company": "Acme Inc",
+      "your_value_prop": "AI automation",
+      "sender_name": "Alex",
+      "calendly_url": "https://calendly.com/demo",
+      "deploy_to": "netlify",
+      "auto_send": false
+    }
+  }
+}
+```
+
+---
+
+## Output
+
+Generated files are saved to `./output/{domain}/`:
+
+```
+output/linear-app/
+├── index.html           # Landing page (open in browser)
+├── outreach.json        # Email + LinkedIn + follow-ups
+├── brand-profile.json   # Research data
+└── homepage.png         # Screenshot of their site
+```
+
+### Sample Landing Page
+
+The generated page:
+- Uses their exact brand colors
+- Dark/light mode matching their site
+- References their specific case studies
+- Mentions their signal (hiring/funding)
+- Includes personalized CTA
+
+### Sample Email
+
+```
+Subject: Re: Head of Sales role
+
+Hi Karri,
+
+Just saw the Head of Sales posting—congrats on the growth.
+The Ramp case study (50 to 500 engineers on Linear) is exactly
+the kind of enterprise motion that's hard to scale without
+losing the product-led magic.
+
+We help DevTools companies like Vercel and Supabase build
+sales processes that technical buyers actually respect.
+
+Put together a quick page with some thoughts specific to Linear:
+https://signal-to-site.netlify.app/linear-app
+
+15 minutes to compare notes?
+
+Best,
+Sarah
+```
+
+---
+
+## Project Structure
+
+```
+signal-to-site/
+├── openclaw.plugin.json      # Plugin manifest
+├── plugin/
+│   └── index.js              # OpenClaw plugin
+├── skills/
+│   └── signal-to-site/
+│       ├── SKILL.md          # Skill documentation
+│       └── prompts/          # Agent prompts
+│           ├── orchestrate.md
+│           ├── research.md
+│           ├── generate-page.md
+│           └── generate-outreach.md
+├── workflows/
+│   └── signal-pipeline.yaml  # Lobster workflow
+├── output/                   # Generated files
+├── setup.sh                  # One-time setup
+├── DEMO.md                   # Demo script
+└── ARCHITECTURE.md           # Technical docs
+```
+
+---
+
+## Demo
+
+See [DEMO.md](DEMO.md) for a complete demo script including:
+- Setup instructions
+- Live demo flow
+- Talking points
+- Q&A prep
+
+### Quick Demo
+
+```bash
+# 1. Start OpenClaw
+openclaw chat
+
+# 2. Run demo
+> /signal-to-site linear.app hiring Head of Sales
+
+# 3. Open generated page
+open ./output/linear-app/index.html
+```
+
+---
+
+## Hackathon Track
+
+**SalesMolty Track** - Sponsored by Linkt AI
+
+This project combines:
+- **Linkt**: GTM signal detection (hiring, funding, tech adoption)
+- **OpenClaw**: Browser automation, asset generation, multi-channel delivery
+
+### Why This Wins
+
+1. **Uses OpenClaw extensively** - Browser tool, Lobster workflows, sub-agents, channels
+2. **Real Linkt integration** - Not mock data, actual GTM signals
+3. **Visible "wow" factor** - Pages literally use their brand colors
+4. **60-second demo** - Fast, impressive, memorable
+5. **Production-ready** - Approval gates, error handling, deployment
+
+---
+
+## Links
+
+- [Architecture Documentation](ARCHITECTURE.md)
+- [Demo Script](DEMO.md)
+- [OpenClaw Docs](https://docs.openclaw.ai)
+- [Linkt API](https://docs.linkt.ai)
+
+---
+
+## License
+
+MIT
+
+---
+
+## Credits
+
+Built for the Moltathon hackathon.
+
+**Linkt Resources:**
+- API Docs: https://docs.linkt.ai
+- Free credits code: **CLAW**
+- 1 month free (150 credits)
