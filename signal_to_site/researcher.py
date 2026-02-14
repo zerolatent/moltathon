@@ -11,12 +11,20 @@ from .models import Company
 class CompanyResearcher:
     """Researches companies to extract value props, pain points, and tone."""
 
-    def __init__(self, openai_api_key: Optional[str] = None):
+    def __init__(self, openai_api_key: Optional[str] = None, base_url: Optional[str] = None):
         self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
+        self.base_url = base_url or os.getenv("OPENAI_BASE_URL")
+        self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
         if not self.openai_api_key:
             raise ValueError("OPENAI_API_KEY is required")
 
-        self.client = OpenAI(api_key=self.openai_api_key)
+        # Support custom endpoints (OpenAI-compatible)
+        client_kwargs = {"api_key": self.openai_api_key}
+        if self.base_url:
+            client_kwargs["base_url"] = self.base_url
+
+        self.client = OpenAI(**client_kwargs)
 
     def research_company(self, company: Company) -> Company:
         """
@@ -30,7 +38,7 @@ class CompanyResearcher:
         prompt = self._build_research_prompt(company)
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.model,
             messages=[
                 {
                     "role": "system",
