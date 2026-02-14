@@ -150,8 +150,19 @@ class LinktClient:
         # Try to get company data from Linkt API
         entities = self.search_entities(domain=domain, limit=1)
 
-        if entities and len(entities) > 0:
+        # Handle different response formats
+        entity = None
+        if isinstance(entities, list) and len(entities) > 0:
             entity = entities[0]
+        elif isinstance(entities, dict) and entities:
+            # API might return a single entity or nested data
+            if "data" in entities and isinstance(entities["data"], list) and len(entities["data"]) > 0:
+                entity = entities["data"][0]
+            elif "name" in entities or "domain" in entities:
+                # It's the entity itself
+                entity = entities
+
+        if entity:
             return Company(
                 name=entity.get("name", domain.split(".")[0].replace("-", " ").title()),
                 domain=entity.get("domain", domain),
