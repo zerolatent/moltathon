@@ -80,14 +80,16 @@ class LinktClient:
 
         Args:
             query: Search query
-            domain: Filter by domain
+            domain: Filter by domain (will be used as query)
             limit: Max results
         """
         params = {"limit": limit}
+        # Linkt API uses 'q' for search queries, not 'domain'
         if query:
             params["q"] = query
-        if domain:
-            params["domain"] = domain
+        elif domain:
+            # Use domain as the search query
+            params["q"] = domain
 
         try:
             response = self.client.get("/entity/search", params=params)
@@ -140,33 +142,41 @@ class LinktClient:
 
     def enrich_company(self, domain: str) -> Company:
         """
-        Get enriched company data.
+        Get enriched company data from Linkt API.
 
         Args:
             domain: Company domain (e.g., "acme.com")
         """
-        # Try to search for the entity by domain
-        try:
-            entities = self.search_entities(domain=domain, limit=1)
-            if entities:
-                entity = entities[0]
-                return Company(
-                    name=entity.get("name", domain.split(".")[0].title()),
-                    domain=domain,
-                    description=entity.get("description", ""),
-                    industry=entity.get("industry", ""),
-                    employee_count=entity.get("employee_count", ""),
-                    location=entity.get("location", ""),
-                    linkedin_url=entity.get("linkedin_url", ""),
-                    signal_type="enrichment",
-                    founders=entity.get("founders", []),
-                )
-        except Exception as e:
-            print(f"Error enriching company: {e}")
+        # Try to get company data from Linkt API
+        entities = self.search_entities(domain=domain, limit=1)
+
+        if entities and len(entities) > 0:
+            entity = entities[0]
+            return Company(
+                name=entity.get("name", domain.split(".")[0].replace("-", " ").title()),
+                domain=entity.get("domain", domain),
+                description=entity.get("description", ""),
+                industry=entity.get("industry", "Technology"),
+                employee_count=entity.get("employee_count", ""),
+                location=entity.get("location", ""),
+                linkedin_url=entity.get("linkedin_url", ""),
+                signal_type="linkt",
+            )
 
         # Fallback to basic company info
+        company_name = domain.split(".")[0].replace("-", " ").title()
+
+        # Handle common domains
+        name_overrides = {
+            "stripe.com": "Stripe",
+            "linear.app": "Linear",
+            "anthropic.com": "Anthropic",
+            "openai.com": "OpenAI",
+            "vercel.com": "Vercel",
+        }
+
         return Company(
-            name=domain.split(".")[0].replace("-", " ").title(),
+            name=name_overrides.get(domain, company_name),
             domain=domain,
             description="",
             industry="Technology",
