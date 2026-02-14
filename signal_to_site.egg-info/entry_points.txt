@@ -1,0 +1,2 @@
+[console_scripts]
+signal-to-site = signal_to_site.cli:main
